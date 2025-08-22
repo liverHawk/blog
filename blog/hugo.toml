@@ -1,0 +1,15 @@
+baseURL = 'https://example.org/'
+languageCode = 'ja-JP'
+title = "liverHawk's Blog"
+theme = 'new-era'
+
+[markup]
+    defaultMarkdownHandler = 'goldmark'
+    [markup.tableOfContents]
+        endLevel = 3
+        ordered = false
+        startLevel = 2
+
+[security]
+    [security.exec]
+        allow = [ "^asciidoctor$" ]
