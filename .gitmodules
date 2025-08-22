@@ -1,0 +1,3 @@
+[submodule "blog/themes/new-era"]
+	path = blog/themes/new-era
+	url = https://github.com/liverHawk/new-era.git
