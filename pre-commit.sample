@@ -1,0 +1,53 @@
+#!/bin/sh
+set -euo pipefail
+
+# 対象拡張子
+EXTS="md markdown"
+
+# ステージされた新規ファイル一覧（追加されたファイル）
+new_files=$(git diff --cached --name-only --diff-filter=A)
+
+echo $new_files
+
+if [ -z "$new_files" ]; then
+  exit 0
+fi
+
+process_file() {
+  local file="\$1"
+  # only content/ and markdown files
+  if [[ ! "$file" =~ ^content/ ]]; then
+    return
+  fi
+  case "${file##*.}" in
+    md|markdown) ;;
+    *) return ;;
+  esac
+
+  # 既に created があるかチェック
+  if grep -qE '^[[:space:]]*created:' "$file"; then
+    return
+  fi
+
+  # 新規ファイルの作成日時（現在の時刻を使用）
+  created=$(date --iso-8601=seconds)
+
+  # YAML front matter があるか
+  if sed -n '1p' "$file" | grep -q '^---'; then
+    # --- の直後に created を挿入
+    awk -v d="$created" 'BEGIN{printed=0} /^---/{print; if(!printed){print "created: " d; printed=1; next}} {print}' "$file" > "$file.tmp" && mv "$file.tmp" "$file"
+  else
+    # front matter が無ければ追加
+    awk -v d="$created" 'BEGIN{print "---"; print "created: " d; print "---"} {print}' "$file" > "$file.tmp" && mv "$file.tmp" "$file"
+  fi
+
+  # ステージし直す
+  git add "$file"
+}
+
+# ループ処理
+while IFS= read -r f; do
+  process_file "$f"
+done <<< "$new_files"
+
+exit 0
