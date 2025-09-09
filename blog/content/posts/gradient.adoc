@@ -1,0 +1,70 @@
+---
+title: '機械学習の回帰問題における勾配関係'
+date: '2025-09-09T04:48:27Z'
+tags: ["research", "math", "ML"]
+draft: false
+toc: true
+# summary
+updated: 2025-09-09T05:30:59Z
+---
+
+:toc:
+
+== 機械学習の基礎
+
+機械学習には、大きく分けて回帰問題・分類問題の２つがある。その中の回帰問題において、値の更新方法について詳しく述べる。
+
+== 多項式回帰
+
+ある値 latexmath:[Y = {y_1, y_2, \cdots, y_m}] と latexmath:[X = {x_1, x_2, \cdots, x_n}] との間の関係において latexmath:[Y = f(X)] を捉えたい。
+
+仮定として、多項式回帰を使い、以下の式を立てる。
+
+:stem: latexmath
+
+[stem]
+++++
+f(x) = \sum_{k=0}^n a_k x^k  (a_k \cdots パラメータ)
+++++
+
+この時、値が関数に沿っているかを確認するために誤差をとる。今回は二乗和誤差を使う。すると、以下のように考えられる。
+
+[stem]
+++++
+E = \frac{1}{2} \sum_{j=1}^m \Big(f(x_j) - t_j \Big)^2
+++++
+
+この二乗和誤差を使って、目的の値yに到達できるようにパラメータを調整する。
+
+=== テイラー展開との関係
+
+誤差を使って値を調節するには、まずこのことを考える必要がある。
+
+stem:[y(x)]において、xが微小な変化Δxをした際、その値はいくらであるか。
+
+条件とテイラー展開より、以下の式が導き出せる。
+
+[stem]
+++++
+y(x + \Delta x) = y(x) + y'(x)\Delta x + \frac{1}{2} y''(x)\Delta x^2 + \cdots 
+++++
+
+ここで、stem:[\frac{\Delta y}{\Delta x}=0] と仮定すると、
+
+[stem]
+++++
+\begin{align}
+0 + y'(x) + y''(x) \Delta x &= 0 \\
+\Delta x &= -\frac{y'}{y''} \\
+\therefore \Delta x &= -\eta y' (y'' = -1/\eta)
+\end{align}
+++++
+
+'''
+
+これを踏まえて、パラメータの調整を考えると、以下のように考えることができる。
+
+[stem]
+++++
+a_i \leftarrow a_i - \eta \frac{\delta E}{\delta a_i}
+++++
