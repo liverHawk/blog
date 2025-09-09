@@ -9,6 +9,12 @@ theme = 'new-era'
         endLevel = 3
         ordered = false
         startLevel = 2
+    [markup.asciidocExt]
+        extensions = [ "asciidoctor-diagram" ]
+        workingFolderCurrent = true
+        [markup.asciidocExt.attributes]
+            my-base-url = "https://example.org"
+            my-attribute-name = "my-attribute-value"
 
 [security]
     [security.exec]
